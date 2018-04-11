@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 
 public class SnapLinearLayoutManager extends LinearLayoutManager {
@@ -78,8 +77,8 @@ public class SnapLinearLayoutManager extends LinearLayoutManager {
     public void onScrollStateChanged(int state) {
         super.onScrollStateChanged(state);
         if (state == RecyclerView.SCROLL_STATE_IDLE) {
-//            int[] ints = calculateDistanceToFinalSnap(this, findSnapView(this));
-//            if (ints.length == 2 && ints[0] == 0 && ints[1] == 0) {
+            int[] ints = calculateDistanceToFinalSnap(this, findSnapView(this));
+            if (ints.length == 2 && ints[0] == 0 && ints[1] == 0) {
                 if (getOrientation() == VERTICAL) {
                     getClosestVerticalView(y);
                 } else if (getOrientation() == HORIZONTAL) {
@@ -89,7 +88,7 @@ public class SnapLinearLayoutManager extends LinearLayoutManager {
                 if (callback != null) {
                     callback.onIdle(closestChild);
                 }
-//            }
+            }
         }
     }
 

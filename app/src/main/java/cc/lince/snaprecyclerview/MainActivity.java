@@ -2,12 +2,9 @@ package cc.lince.snaprecyclerview;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -44,38 +41,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         final SnapRecyclerView recyclerView = findViewById(R.id.recyclerView);
-//        SnapLinearLayoutManager layout = new SnapLinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
-        LinearLayoutManager layout = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
-//        layout.setOnCallback(new SnapLinearLayoutManager.Callback() {
-//            @Override
-//            public void onIdle(View view) {
-//                Log.e("fling", ((TextView) view).getText().toString());
-//            }
-//        });
-//        recyclerView.addItemDecoration(new PaddingItemDecorator(RecyclerView.HORIZONTAL, 800));
-        recyclerView.addOnItemTouchListener(new OnRecyclerItemClickListener(recyclerView) {
+        SnapLinearLayoutManager layout = new SnapLinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
+        layout.setOnCallback(new SnapLinearLayoutManager.Callback() {
             @Override
-            public void onItemClick(RecyclerView.ViewHolder viewHolder, final MotionEvent e, final int childLayoutPosition) {
-                Log.e("fling", "position:" + childLayoutPosition);
-//                recyclerView.smoothScrollToPosition(childLayoutPosition);
-                recyclerView.post(new Runnable() {
-                    @Override
-                    public void run() {
-//                        final int deltaX = (int) (e.getX() - 800);
-//                        recyclerView.smoothScrollBy(deltaX, 0, new DecelerateInterpolator(1f));
-                        recyclerView.smoothScrollToPosition(childLayoutPosition);
-                    }
-                });
+            public void onIdle(View view) {
+                Log.e("fling", ((TextView) view).getText().toString());
             }
         });
         recyclerView.setLayoutManager(layout);
         recyclerView.setAdapter(new SnapAdapter(mList));
-        recyclerView.post(new Runnable() {
-            @Override
-            public void run() {
-                recyclerView.smoothScrollToPosition(6);
-            }
-        });
-//        recyclerView.setAnchorHorizontal(800);
+        recyclerView.setAnchorHorizontal(800);
     }
 }
