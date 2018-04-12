@@ -13,8 +13,8 @@ import android.view.animation.DecelerateInterpolator;
 public class SnapRecyclerView extends RecyclerView {
 
     private SnapLinearLayoutManager layoutManager;
+
     private AnchorLinearSnapHelper snapHelper;
-    private OnAnchorListener onAnchorListener;
 
     public SnapRecyclerView(Context context) {
         this(context, null, 0);
@@ -26,7 +26,6 @@ public class SnapRecyclerView extends RecyclerView {
 
     public SnapRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        setClipToPadding(false);
     }
 
     public void setOnAnchorListener(final OnAnchorListener onAnchorListener) {
@@ -40,7 +39,6 @@ public class SnapRecyclerView extends RecyclerView {
                 }
             });
         }
-        this.onAnchorListener = onAnchorListener;
     }
 
     @Override
@@ -54,44 +52,30 @@ public class SnapRecyclerView extends RecyclerView {
     public void setAnchorVertical(final int anchorY) {
         if (layoutManager != null) {
             layoutManager.setAnchorVertical(anchorY);
+            addItemDecoration(new PaddingItemDecorator(RecyclerView.VERTICAL, anchorY));
 
             if (snapHelper == null) {
                 snapHelper = new AnchorLinearSnapHelper();
+                snapHelper.setAnchorVertical(anchorY);
                 snapHelper.attachToRecyclerView(SnapRecyclerView.this);
             }
             snapHelper.setAnchorVertical(anchorY);
-
             addOnItemTouchListener(new OnRecyclerItemClickListener(anchorY));
-
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    setPadding(0, anchorY, 0, getHeight() - anchorY);
-                    smoothScrollToPosition(0);
-                }
-            });
         }
     }
 
     public void setAnchorHorizontal(final int anchorX) {
         if (layoutManager != null) {
             layoutManager.setAnchorHorizontal(anchorX);
+            addItemDecoration(new PaddingItemDecorator(RecyclerView.HORIZONTAL, anchorX));
 
             if (snapHelper == null) {
                 snapHelper = new AnchorLinearSnapHelper();
+                snapHelper.setAnchorHorizontal(anchorX);
                 snapHelper.attachToRecyclerView(SnapRecyclerView.this);
             }
             snapHelper.setAnchorHorizontal(anchorX);
-
             addOnItemTouchListener(new OnRecyclerItemClickListener(anchorX));
-
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    setPadding(anchorX, 0, getWidth() - anchorX, 0);
-                    smoothScrollToPosition(0);
-                }
-            });
         }
     }
 
@@ -109,14 +93,14 @@ public class SnapRecyclerView extends RecyclerView {
                             if (child == null) {
                                 return true;
                             }
-                            View snapView = layoutManager.findSnapView(layoutManager);
-                            if (snapView == child) {
-                                /*
-                                需要锚定的 item 和点击的 item 是同一个
-                                即重复点击同一个 item
-                                */
-                                return true;
-                            }
+//                            View snapView = layoutManager.findSnapView(layoutManager);
+//                            if (snapView == child) {
+//                                /*
+//                                需要锚定的 item 和点击的 item 是同一个
+//                                即重复点击同一个 item
+//                                */
+//                                return true;
+//                            }
 
                             if (layoutManager.getOrientation() == HORIZONTAL) {
                                 float viewCenter = child.getX() + child.getWidth() / 2;
@@ -155,7 +139,6 @@ public class SnapRecyclerView extends RecyclerView {
 
         @Override
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
         }
     }
 

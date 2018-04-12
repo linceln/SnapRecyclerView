@@ -8,7 +8,6 @@ import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 
 public class AnchorLinearSnapHelper extends SnapHelper {
@@ -45,7 +44,6 @@ public class AnchorLinearSnapHelper extends SnapHelper {
     public void attachToRecyclerView(@Nullable RecyclerView recyclerView) throws IllegalStateException {
         this.mRecyclerView = recyclerView;
         super.attachToRecyclerView(recyclerView);
-
     }
 
     @Nullable
@@ -67,7 +65,12 @@ public class AnchorLinearSnapHelper extends SnapHelper {
     }
 
     private int distanceToCenter(@NonNull View targetView, OrientationHelper helper, int center) {
-        final int childCenter = helper.getDecoratedStart(targetView) + (helper.getDecoratedMeasurement(targetView) / 2);
+        int width = targetView.getWidth();
+        int decoratedStart = helper.getDecoratedStart(targetView);
+        int decoratedMeasurement = helper.getDecoratedMeasurement(targetView);
+        final int childCenter = decoratedStart + (decoratedMeasurement / 2);
+//        int leftDecorationWidth = mRecyclerView.getLayoutManager().getLeftDecorationWidth(targetView);
+//        int childCenter = targetView.getLeft() + leftDecorationWidth + targetView.getWidth() / 2;
         return childCenter - center;
     }
 
@@ -93,8 +96,13 @@ public class AnchorLinearSnapHelper extends SnapHelper {
 
         for (int i = 0; i < childCount; i++) {
             final View child = layoutManager.getChildAt(i);
-            int childCenter = helper.getDecoratedStart(child)
-                    + (helper.getDecoratedMeasurement(child) / 2);
+            int leftDecorationWidth = layoutManager.getLeftDecorationWidth(child);
+            int decoratedMeasurement = helper.getDecoratedMeasurement(child);
+            int rightDecorationWidth = layoutManager.getRightDecorationWidth(child);
+//            int childCenter = helper.getDecoratedStart(child) + (helper.getDecoratedMeasurement(child)  / 2);
+//            int childCenter = helper.getDecoratedStart(child) + helper.getDecoratedMeasurement(child) - child.getWidth() / 2;
+            int childCenter = helper.getDecoratedStart(child) + leftDecorationWidth + child.getWidth() / 2;
+
             int absDistance = Math.abs(childCenter - center);
 
             /** if child center is closer than previous closest, set it as closest  **/

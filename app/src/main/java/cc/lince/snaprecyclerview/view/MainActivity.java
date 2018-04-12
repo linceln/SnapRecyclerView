@@ -1,5 +1,7 @@
 package cc.lince.snaprecyclerview.view;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -52,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setOnAnchorListener(new SnapRecyclerView.OnAnchorListener() {
             @Override
             public void onAnchor(View view) {
+                applyScale(view);
                 // 选中回调
                 final Snackbar snackbar = Snackbar.make(tvAnchor, ((TextView) view).getText().toString(), Snackbar.LENGTH_SHORT);
                 snackbar.setAction("Dismiss", new View.OnClickListener() {
@@ -70,5 +73,16 @@ public class MainActivity extends AppCompatActivity {
                 recyclerView.setAnchorHorizontal(anchorX);
             }
         });
+    }
+
+    private void applyScale(View view) {
+        if (view != null) {
+            ObjectAnimator scaleX = ObjectAnimator.ofFloat(view, "scaleX", 1.4f);
+            ObjectAnimator scaleY = ObjectAnimator.ofFloat(view, "scaleY", 1.4f);
+            AnimatorSet animatorSet = new AnimatorSet();
+            animatorSet.setDuration(80);
+            animatorSet.playTogether(scaleX, scaleY);
+            animatorSet.start();
+        }
     }
 }
