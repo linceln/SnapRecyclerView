@@ -14,6 +14,7 @@ public class SnapRecyclerView extends RecyclerView {
 
     private SnapLinearLayoutManager layoutManager;
     private AnchorLinearSnapHelper snapHelper;
+    private OnAnchorListener onAnchorListener;
 
     public SnapRecyclerView(Context context) {
         this(context, null, 0);
@@ -26,6 +27,20 @@ public class SnapRecyclerView extends RecyclerView {
     public SnapRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         setClipToPadding(false);
+    }
+
+    public void setOnAnchorListener(final OnAnchorListener onAnchorListener) {
+        if (layoutManager != null) {
+            layoutManager.setOnCallback(new SnapLinearLayoutManager.Callback() {
+                @Override
+                public void onIdle(View view) {
+                    if (onAnchorListener != null) {
+                        onAnchorListener.onAnchor(view);
+                    }
+                }
+            });
+        }
+        this.onAnchorListener = onAnchorListener;
     }
 
     @Override
@@ -142,5 +157,9 @@ public class SnapRecyclerView extends RecyclerView {
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
 
         }
+    }
+
+    public interface OnAnchorListener {
+        void onAnchor(View view);
     }
 }

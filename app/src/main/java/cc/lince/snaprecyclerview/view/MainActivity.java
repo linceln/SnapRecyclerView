@@ -43,12 +43,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         final TextView tvAnchor = findViewById(R.id.tvAnchor);
+
         final SnapRecyclerView recyclerView = findViewById(R.id.recyclerView);
-        SnapLinearLayoutManager layout = new SnapLinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
-        layout.setOnCallback(new SnapLinearLayoutManager.Callback() {
+        recyclerView.setLayoutManager(new SnapLinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
+        recyclerView.setAdapter(new SnapAdapter(mList));
+        recyclerView.setOnAnchorListener(new SnapRecyclerView.OnAnchorListener() {
             @Override
-            public void onIdle(View view) {
+            public void onAnchor(View view) {
+                // 选中回调
                 final Snackbar snackbar = Snackbar.make(tvAnchor, ((TextView) view).getText().toString(), Snackbar.LENGTH_SHORT);
                 snackbar.setAction("Dismiss", new View.OnClickListener() {
                     @Override
@@ -59,8 +63,6 @@ public class MainActivity extends AppCompatActivity {
                 snackbar.show();
             }
         });
-        recyclerView.setLayoutManager(layout);
-        recyclerView.setAdapter(new SnapAdapter(mList));
         recyclerView.post(new Runnable() {
             @Override
             public void run() {
