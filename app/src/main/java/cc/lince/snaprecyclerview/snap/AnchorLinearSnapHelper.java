@@ -63,7 +63,6 @@ public class AnchorLinearSnapHelper extends SnapHelper {
         } else {
             out[1] = 0;
         }
-        Log.e("Fling", " int[0]: " + out[0]);
         return out;
     }
 

@@ -45,11 +45,16 @@ public class SnapRecyclerView extends RecyclerView {
             addOnItemTouchListener(new OnRecyclerItemClickListener(SnapRecyclerView.this) {
                 @Override
                 public void onItemClick(RecyclerView.ViewHolder viewHolder, MotionEvent e, final int childLayoutPosition) {
-                    View snapView = layoutManager.findSnapView(layoutManager);
-                    if (snapView == viewHolder.itemView) {
+                    View view = layoutManager.findSnapView(layoutManager);
+                    if (view == viewHolder.itemView) {
+                        /*
+                        需要锚定的 item 和点击的 item 是同一个
+                        即重复点击同一个 item
+                         */
                         return;
                     }
-                    final int deltaY = (int) (e.getY() - y);
+                    float viewCenter = (int) (viewHolder.itemView.getX() + viewHolder.itemView.getWidth() / 2);
+                    final int deltaY = (int) (viewCenter - y);
                     post(new Runnable() {
                         @Override
                         public void run() {
@@ -80,11 +85,17 @@ public class SnapRecyclerView extends RecyclerView {
             addOnItemTouchListener(new OnRecyclerItemClickListener(SnapRecyclerView.this) {
                 @Override
                 public void onItemClick(RecyclerView.ViewHolder viewHolder, final MotionEvent e, final int childLayoutPosition) {
-                    View snapView = layoutManager.findSnapView(layoutManager);
-                    if (snapView == viewHolder.itemView) {
+                    View view = layoutManager.findSnapView(layoutManager);
+                    if (view == viewHolder.itemView) {
+                        /*
+                        需要锚定的 item 和点击的 item 是同一个
+                        即重复点击同一个 item
+                         */
                         return;
                     }
-                    final int deltaX = (int) (e.getX() - x);
+
+                    float viewCenter = viewHolder.itemView.getX() + viewHolder.itemView.getWidth() / 2;
+                    final int deltaX = (int) (viewCenter - x);
                     post(new Runnable() {
                         @Override
                         public void run() {
