@@ -1,9 +1,8 @@
-package cc.lince.snaprecyclerview;
+package cc.lince.snaprecyclerview.snap;
 
 import android.graphics.Rect;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 
 public class PaddingItemDecorator extends RecyclerView.ItemDecoration {

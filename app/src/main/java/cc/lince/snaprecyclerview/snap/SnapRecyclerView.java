@@ -1,4 +1,4 @@
-package cc.lince.snaprecyclerview;
+package cc.lince.snaprecyclerview.snap;
 
 import android.content.Context;
 import android.support.annotation.Nullable;

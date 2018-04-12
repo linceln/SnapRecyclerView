@@ -1,12 +1,10 @@
-package cc.lince.snaprecyclerview;
+package cc.lince.snaprecyclerview.snap;
 
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewParent;
 
 public abstract class OnRecyclerItemClickListener implements RecyclerView.OnItemTouchListener {
 
@@ -36,7 +34,7 @@ public abstract class OnRecyclerItemClickListener implements RecyclerView.OnItem
 
     public abstract void onItemClick(RecyclerView.ViewHolder viewHolder, MotionEvent e, int childLayoutPosition);
 
-    public class ItemTouchHelperListener extends GestureDetector.SimpleOnGestureListener {
+    private class ItemTouchHelperListener extends GestureDetector.SimpleOnGestureListener {
 
         @Override
         public boolean onSingleTapUp(MotionEvent e) {

@@ -1,6 +1,7 @@
-package cc.lince.snaprecyclerview;
+package cc.lince.snaprecyclerview.view;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -9,6 +10,10 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import cc.lince.snaprecyclerview.R;
+import cc.lince.snaprecyclerview.snap.SnapLinearLayoutManager;
+import cc.lince.snaprecyclerview.snap.SnapRecyclerView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,17 +44,30 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        final TextView tvAnchor = findViewById(R.id.tvAnchor);
         final SnapRecyclerView recyclerView = findViewById(R.id.recyclerView);
         SnapLinearLayoutManager layout = new SnapLinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
         layout.setOnCallback(new SnapLinearLayoutManager.Callback() {
             @Override
             public void onIdle(View view) {
-                Log.e("fling", ((TextView) view).getText().toString());
+                final Snackbar snackbar = Snackbar.make(tvAnchor, ((TextView) view).getText().toString(), Snackbar.LENGTH_SHORT);
+                snackbar.setAction("Dismiss", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        snackbar.dismiss();
+                    }
+                });
+                snackbar.show();
             }
         });
         recyclerView.setLayoutManager(layout);
         recyclerView.setAdapter(new SnapAdapter(mList));
-        recyclerView.setAnchorHorizontal(800);
+        recyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                int offset = (int) (tvAnchor.getWidth() / 2 + tvAnchor.getX());
+                recyclerView.setAnchorHorizontal(offset);
+            }
+        });
     }
 }

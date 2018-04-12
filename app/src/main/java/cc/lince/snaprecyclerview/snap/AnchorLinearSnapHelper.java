@@ -1,4 +1,4 @@
-package cc.lince.snaprecyclerview;
+package cc.lince.snaprecyclerview.snap;
 
 import android.graphics.PointF;
 import android.support.annotation.NonNull;

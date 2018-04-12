@@ -1,4 +1,4 @@
-package cc.lince.snaprecyclerview;
+package cc.lince.snaprecyclerview.snap;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
