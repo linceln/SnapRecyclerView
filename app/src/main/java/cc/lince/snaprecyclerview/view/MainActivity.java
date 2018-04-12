@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -65,8 +64,8 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.post(new Runnable() {
             @Override
             public void run() {
-                int offset = (int) (tvAnchor.getWidth() / 2 + tvAnchor.getX());
-                recyclerView.setAnchorHorizontal(offset);
+                int anchorX = (int) (tvAnchor.getWidth() / 2 + tvAnchor.getX());
+                recyclerView.setAnchorHorizontal(anchorX);
             }
         });
     }
