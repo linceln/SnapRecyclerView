@@ -1,4 +1,4 @@
-package cc.lince.snaprecyclerview.view;
+package cc.lince.snaprecyclerview.activity;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;

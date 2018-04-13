@@ -1,4 +1,4 @@
-package cc.lince.snaprecyclerview.snap;
+package cc.lince.snaprecyclerview.view;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -14,7 +14,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
-public class SnapRecyclerView extends RecyclerView {
+public class AnchorRecyclerView extends RecyclerView {
 
     private LinearLayoutManager layoutManager;
     private AnchorLinearSnapHelper snapHelper;
@@ -28,15 +28,15 @@ public class SnapRecyclerView extends RecyclerView {
     @Nullable
     private OrientationHelper mVerticalHelper;
 
-    public SnapRecyclerView(Context context) {
+    public AnchorRecyclerView(Context context) {
         this(context, null, 0);
     }
 
-    public SnapRecyclerView(Context context, @Nullable AttributeSet attrs) {
+    public AnchorRecyclerView(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public SnapRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
+    public AnchorRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         setClipToPadding(false);
     }
@@ -54,7 +54,8 @@ public class SnapRecyclerView extends RecyclerView {
     public void setAnchorVertical(final int anchorY) {
         if (snapHelper == null) {
             snapHelper = new AnchorLinearSnapHelper();
-            snapHelper.attachToRecyclerView(SnapRecyclerView.this);
+            snapHelper.setAnchorVertical(anchorY);
+            snapHelper.attachToRecyclerView(AnchorRecyclerView.this);
         }
         snapHelper.setAnchorVertical(anchorY);
 
@@ -74,7 +75,8 @@ public class SnapRecyclerView extends RecyclerView {
     public void setAnchorHorizontal(final int anchorX) {
         if (snapHelper == null) {
             snapHelper = new AnchorLinearSnapHelper();
-            snapHelper.attachToRecyclerView(SnapRecyclerView.this);
+            snapHelper.setAnchorHorizontal(anchorX);
+            snapHelper.attachToRecyclerView(AnchorRecyclerView.this);
         }
         snapHelper.setAnchorHorizontal(anchorX);
 

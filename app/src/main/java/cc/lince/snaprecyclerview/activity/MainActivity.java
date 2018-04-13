@@ -1,4 +1,4 @@
-package cc.lince.snaprecyclerview.view;
+package cc.lince.snaprecyclerview.activity;
 
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cc.lince.snaprecyclerview.R;
-import cc.lince.snaprecyclerview.snap.SnapRecyclerView;
+import cc.lince.snaprecyclerview.view.AnchorRecyclerView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,11 +46,11 @@ public class MainActivity extends AppCompatActivity {
 
         final TextView tvAnchor = findViewById(R.id.tvAnchor);
 
-        final SnapRecyclerView recyclerView = findViewById(R.id.recyclerView);
+        final AnchorRecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
         SnapAdapter adapter = new SnapAdapter(mList);
         recyclerView.setAdapter(adapter);
-        recyclerView.setOnAnchorListener(new SnapRecyclerView.OnAnchorListener() {
+        recyclerView.setOnAnchorListener(new AnchorRecyclerView.OnAnchorListener() {
             @Override
             public void onAnchor(View view) {
                 // 选中回调

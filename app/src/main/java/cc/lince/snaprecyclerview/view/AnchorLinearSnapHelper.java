@@ -1,4 +1,4 @@
-package cc.lince.snaprecyclerview.snap;
+package cc.lince.snaprecyclerview.view;
 
 import android.graphics.PointF;
 import android.support.annotation.NonNull;
@@ -44,7 +44,6 @@ public class AnchorLinearSnapHelper extends SnapHelper {
     public void attachToRecyclerView(@Nullable RecyclerView recyclerView) throws IllegalStateException {
         this.mRecyclerView = recyclerView;
         super.attachToRecyclerView(recyclerView);
-
     }
 
     @Nullable

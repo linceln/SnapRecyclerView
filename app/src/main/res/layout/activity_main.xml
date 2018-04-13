@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.MainActivity">
+    tools:context=".activity.MainActivity">
 
     <TextView
         android:id="@+id/tvAnchor"
@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
-    <cc.lince.snaprecyclerview.snap.SnapRecyclerView
+    <cc.lince.snaprecyclerview.view.AnchorRecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
