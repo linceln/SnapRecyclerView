@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -48,7 +49,14 @@ public class MainActivity extends AppCompatActivity {
 
         final SnapRecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new SnapLinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
-        recyclerView.setAdapter(new SnapAdapter(mList));
+        SnapAdapter adapter = new SnapAdapter(mList);
+        recyclerView.setAdapter(adapter);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                Log.e("scroll", "onScrollStateChanged: " + newState);
+            }
+        });
         recyclerView.setOnAnchorListener(new SnapRecyclerView.OnAnchorListener() {
             @Override
             public void onAnchor(View view) {

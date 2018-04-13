@@ -43,48 +43,19 @@ public class SnapLinearLayoutManager extends LinearLayoutManager {
     }
 
     @Override
-    public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
-        int orientation = getOrientation();
-        if (orientation == VERTICAL) {
-            for (int i = 0; i < getChildCount(); i++) {
-                final View child = getChildAt(i);
-                child.setScaleX(1f);
-                child.setScaleY(1f);
-            }
-            return super.scrollVerticallyBy(dy, recycler, state);
-        } else {
-            return 0;
-        }
-    }
-
-    @Override
-    public int scrollHorizontallyBy(int dx, RecyclerView.Recycler recycler, RecyclerView.
-            State state) {
-        int orientation = getOrientation();
-        if (orientation == HORIZONTAL) {
-            for (int i = 0; i < getChildCount(); i++) {
-                final View child = getChildAt(i);
-                child.setScaleX(1f);
-                child.setScaleY(1f);
-            }
-            return super.scrollHorizontallyBy(dx, recycler, state);
-        } else {
-            return 0;
-        }
-    }
-
-    @Override
     public void onScrollStateChanged(int state) {
         super.onScrollStateChanged(state);
         if (state == RecyclerView.SCROLL_STATE_IDLE) {
             int[] ints = calculateDistanceToFinalSnap(this, findSnapView(this));
             if (ints.length == 2 && ints[0] == 0 && ints[1] == 0) {
+
+                applyScale(1f);
                 if (getOrientation() == VERTICAL) {
                     getClosestVerticalView(y);
                 } else if (getOrientation() == HORIZONTAL) {
                     getClosestHorizontalView(x);
                 }
-                applyScale();
+                applyScale(1.4f);
                 if (callback != null) {
                     callback.onIdle(closestChild);
                 }
@@ -92,10 +63,10 @@ public class SnapLinearLayoutManager extends LinearLayoutManager {
         }
     }
 
-    private void applyScale() {
+    private void applyScale(float scale) {
         if (closestChild != null) {
-            ObjectAnimator scaleX = ObjectAnimator.ofFloat(closestChild, "scaleX", 1.4f);
-            ObjectAnimator scaleY = ObjectAnimator.ofFloat(closestChild, "scaleY", 1.4f);
+            ObjectAnimator scaleX = ObjectAnimator.ofFloat(closestChild, "scaleX", scale);
+            ObjectAnimator scaleY = ObjectAnimator.ofFloat(closestChild, "scaleY", scale);
             AnimatorSet animatorSet = new AnimatorSet();
             animatorSet.setDuration(80);
             animatorSet.playTogether(scaleX, scaleY);
@@ -109,8 +80,6 @@ public class SnapLinearLayoutManager extends LinearLayoutManager {
 
         for (int i = 0; i < getChildCount(); i++) {
             final View child = getChildAt(i);
-            child.setScaleX(1f);
-            child.setScaleY(1f);
 
             int childCenter = getHorizontalHelper(this).getDecoratedStart(child)
                     + (getHorizontalHelper(this).getDecoratedMeasurement(child) / 2);
@@ -129,8 +98,6 @@ public class SnapLinearLayoutManager extends LinearLayoutManager {
 
         for (int i = 0; i < getChildCount(); i++) {
             final View child = getChildAt(i);
-            child.setScaleX(1f);
-            child.setScaleY(1f);
 
             int childCenter = getVerticalHelper(this).getDecoratedStart(child)
                     + (getVerticalHelper(this).getDecoratedMeasurement(child) / 2);

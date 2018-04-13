@@ -33,6 +33,8 @@ public class SnapAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         TextView view = holder.itemView.findViewById(R.id.textView);
         view.setText(mList.get(position));
+        view.setScaleX(1f);
+        view.setScaleY(1f);
     }
 
     @Override
