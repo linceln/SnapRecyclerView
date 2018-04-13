@@ -1,20 +1,32 @@
 package cc.lince.snaprecyclerview.snap;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.GestureDetectorCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.DecelerateInterpolator;
 
 public class SnapRecyclerView extends RecyclerView {
 
-    private SnapLinearLayoutManager layoutManager;
+    private LinearLayoutManager layoutManager;
     private AnchorLinearSnapHelper snapHelper;
     private OnAnchorListener onAnchorListener;
+
+    private View closestChild;
+
+    @Nullable
+    private OrientationHelper mHorizontalHelper;
+
+    @Nullable
+    private OrientationHelper mVerticalHelper;
 
     public SnapRecyclerView(Context context) {
         this(context, null, 0);
@@ -30,68 +42,99 @@ public class SnapRecyclerView extends RecyclerView {
     }
 
     public void setOnAnchorListener(final OnAnchorListener onAnchorListener) {
-        if (layoutManager != null) {
-            layoutManager.setOnCallback(new SnapLinearLayoutManager.Callback() {
-                @Override
-                public void onIdle(View view) {
-                    if (onAnchorListener != null) {
-                        onAnchorListener.onAnchor(view);
-                    }
-                }
-            });
-        }
         this.onAnchorListener = onAnchorListener;
     }
 
     @Override
     public void setLayoutManager(LayoutManager layout) {
-        if (layout instanceof SnapLinearLayoutManager) {
-            layoutManager = (SnapLinearLayoutManager) layout;
-        }
+        layoutManager = (LinearLayoutManager) layout;
         super.setLayoutManager(layout);
     }
 
     public void setAnchorVertical(final int anchorY) {
-        if (layoutManager != null) {
-            layoutManager.setAnchorVertical(anchorY);
-
-            if (snapHelper == null) {
-                snapHelper = new AnchorLinearSnapHelper();
-                snapHelper.attachToRecyclerView(SnapRecyclerView.this);
-            }
-            snapHelper.setAnchorVertical(anchorY);
-
-            addOnItemTouchListener(new OnRecyclerItemClickListener(anchorY));
-
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    setPadding(0, anchorY, 0, getHeight() - anchorY);
-                    smoothScrollToPosition(0);
-                }
-            });
+        if (snapHelper == null) {
+            snapHelper = new AnchorLinearSnapHelper();
+            snapHelper.attachToRecyclerView(SnapRecyclerView.this);
         }
+        snapHelper.setAnchorVertical(anchorY);
+
+        addOnItemTouchListener(new OnRecyclerItemClickListener(anchorY));
+
+        addOnScrollListener(new OnRecyclerScrollListener(layoutManager.getOrientation(), anchorY));
+
+        post(new Runnable() {
+            @Override
+            public void run() {
+                setPadding(0, anchorY, 0, getHeight() - anchorY);
+                smoothScrollToPosition(0);
+            }
+        });
     }
 
     public void setAnchorHorizontal(final int anchorX) {
-        if (layoutManager != null) {
-            layoutManager.setAnchorHorizontal(anchorX);
+        if (snapHelper == null) {
+            snapHelper = new AnchorLinearSnapHelper();
+            snapHelper.attachToRecyclerView(SnapRecyclerView.this);
+        }
+        snapHelper.setAnchorHorizontal(anchorX);
 
-            if (snapHelper == null) {
-                snapHelper = new AnchorLinearSnapHelper();
-                snapHelper.attachToRecyclerView(SnapRecyclerView.this);
+        addOnItemTouchListener(new OnRecyclerItemClickListener(anchorX));
+
+        addOnScrollListener(new OnRecyclerScrollListener(layoutManager.getOrientation(), anchorX));
+
+        post(new Runnable() {
+            @Override
+            public void run() {
+                setPadding(anchorX, 0, getWidth() - anchorX, 0);
+                smoothScrollToPosition(0);
             }
-            snapHelper.setAnchorHorizontal(anchorX);
+        });
+    }
 
-            addOnItemTouchListener(new OnRecyclerItemClickListener(anchorX));
+    private void applyScale(float scale) {
+        if (closestChild != null) {
+            ObjectAnimator scaleX = ObjectAnimator.ofFloat(closestChild, "scaleX", scale);
+            ObjectAnimator scaleY = ObjectAnimator.ofFloat(closestChild, "scaleY", scale);
+            AnimatorSet animatorSet = new AnimatorSet();
+            animatorSet.setDuration(80);
+            animatorSet.playTogether(scaleX, scaleY);
+            animatorSet.start();
+        }
+    }
 
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    setPadding(anchorX, 0, getWidth() - anchorX, 0);
-                    smoothScrollToPosition(0);
-                }
-            });
+    private void getClosestHorizontalView(int center) {
+
+        int absClosest = Integer.MAX_VALUE;
+
+        for (int i = 0; i < getChildCount(); i++) {
+            final View child = getChildAt(i);
+
+            int childCenter = getHorizontalHelper(layoutManager).getDecoratedStart(child)
+                    + (getHorizontalHelper(layoutManager).getDecoratedMeasurement(child) / 2);
+            int absDistance = Math.abs(childCenter - center);
+
+            if (absDistance < absClosest) {
+                absClosest = absDistance;
+                closestChild = child;
+            }
+        }
+    }
+
+    private void getClosestVerticalView(int center) {
+
+        int absClosest = Integer.MAX_VALUE;
+
+        for (int i = 0; i < getChildCount(); i++) {
+            final View child = getChildAt(i);
+
+            int childCenter = getVerticalHelper(layoutManager).getDecoratedStart(child)
+                    + (getVerticalHelper(layoutManager).getDecoratedMeasurement(child) / 2);
+            int absDistance = Math.abs(childCenter - center);
+
+            if (absDistance < absClosest) {
+                absClosest = absDistance;
+                closestChild = child;
+            }
         }
     }
 
@@ -109,14 +152,6 @@ public class SnapRecyclerView extends RecyclerView {
                             if (child == null) {
                                 return true;
                             }
-                            View snapView = layoutManager.findSnapView(layoutManager);
-                            if (snapView == child) {
-                                /*
-                                需要锚定的 item 和点击的 item 是同一个
-                                即重复点击同一个 item
-                                */
-                                return true;
-                            }
 
                             if (layoutManager.getOrientation() == HORIZONTAL) {
                                 float viewCenter = child.getX() + child.getWidth() / 2;
@@ -124,16 +159,18 @@ public class SnapRecyclerView extends RecyclerView {
                                 post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        smoothScrollBy(deltaX, 0, new DecelerateInterpolator(1f));
+                                        if (deltaX != 0)
+                                            smoothScrollBy(deltaX, 0);
                                     }
                                 });
                             } else if (layoutManager.getOrientation() == VERTICAL) {
-                                float viewCenter = (int) (child.getX() + child.getWidth() / 2);
+                                float viewCenter = (int) (child.getY() + child.getHeight() / 2);
                                 final int deltaY = (int) (viewCenter - offset);
                                 post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        smoothScrollBy(0, deltaY);
+                                        if (deltaY != 0)
+                                            smoothScrollBy(0, deltaY);
                                     }
                                 });
                             }
@@ -157,6 +194,58 @@ public class SnapRecyclerView extends RecyclerView {
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
 
         }
+    }
+
+    private class OnRecyclerScrollListener extends RecyclerView.OnScrollListener {
+        private int mOrientation;
+        private int mAnchor;
+
+        OnRecyclerScrollListener(int orientation, int anchor) {
+            this.mOrientation = orientation;
+            this.mAnchor = anchor;
+        }
+
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                /* TODO
+                    IDLE 状态可能会回调两次
+                    1. 滑动完成后
+                    2. SnapHelper 调整位置后
+                    此处需要在最后一次回调时更新选中状态
+                 */
+                int[] ints = snapHelper.calculateDistanceToFinalSnap(layoutManager, snapHelper.findSnapView(layoutManager));
+
+                if (onAnchorListener != null && ints != null && ints.length == 2 && ints[0] == 0 && ints[1] == 0) {
+                    applyScale(1f);
+                    if (mOrientation == VERTICAL) {
+                        getClosestVerticalView(mAnchor);
+                    } else if (mOrientation == HORIZONTAL) {
+                        getClosestHorizontalView(mAnchor);
+                    }
+                    applyScale(1.4f);
+                    onAnchorListener.onAnchor(closestChild);
+                }
+            }
+        }
+    }
+
+    @NonNull
+    private OrientationHelper getHorizontalHelper(@NonNull RecyclerView.LayoutManager
+                                                          layoutManager) {
+        if (mHorizontalHelper == null || mHorizontalHelper.getLayoutManager() != layoutManager) {
+            mHorizontalHelper = OrientationHelper.createHorizontalHelper(layoutManager);
+        }
+        return mHorizontalHelper;
+    }
+
+    @NonNull
+    private OrientationHelper getVerticalHelper(@NonNull RecyclerView.LayoutManager
+                                                        layoutManager) {
+        if (mVerticalHelper == null || mVerticalHelper.getLayoutManager() != layoutManager) {
+            mVerticalHelper = OrientationHelper.createVerticalHelper(layoutManager);
+        }
+        return mVerticalHelper;
     }
 
     public interface OnAnchorListener {

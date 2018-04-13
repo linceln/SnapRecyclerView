@@ -3,8 +3,8 @@ package cc.lince.snaprecyclerview.view;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cc.lince.snaprecyclerview.R;
-import cc.lince.snaprecyclerview.snap.SnapLinearLayoutManager;
 import cc.lince.snaprecyclerview.snap.SnapRecyclerView;
 
 public class MainActivity extends AppCompatActivity {
@@ -48,15 +47,9 @@ public class MainActivity extends AppCompatActivity {
         final TextView tvAnchor = findViewById(R.id.tvAnchor);
 
         final SnapRecyclerView recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new SnapLinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
         SnapAdapter adapter = new SnapAdapter(mList);
         recyclerView.setAdapter(adapter);
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                Log.e("scroll", "onScrollStateChanged: " + newState);
-            }
-        });
         recyclerView.setOnAnchorListener(new SnapRecyclerView.OnAnchorListener() {
             @Override
             public void onAnchor(View view) {

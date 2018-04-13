@@ -8,7 +8,6 @@ import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 
 public class AnchorLinearSnapHelper extends SnapHelper {
