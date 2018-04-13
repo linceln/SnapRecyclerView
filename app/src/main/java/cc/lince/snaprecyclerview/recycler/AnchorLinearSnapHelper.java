@@ -1,4 +1,4 @@
-package cc.lince.snaprecyclerview.view;
+package cc.lince.snaprecyclerview.recycler;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -129,7 +129,7 @@ public class AnchorLinearSnapHelper extends LinearSnapHelper {
                     + (helper.getDecoratedMeasurement(child) / 2);
             int absDistance = Math.abs(childCenter - center);
 
-            /** if child center is closer than previous closest, set it as closest  **/
+            /* if child center is closer than previous closest, set it as closest  **/
             if (absDistance < absClosest) {
                 absClosest = absDistance;
                 closestChild = child;

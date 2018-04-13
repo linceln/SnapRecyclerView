@@ -14,7 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cc.lince.snaprecyclerview.R;
-import cc.lince.snaprecyclerview.view.AnchorLinearSnapHelper;
+import cc.lince.snaprecyclerview.recycler.AnchorLinearSnapHelper;
+import cc.lince.snaprecyclerview.recycler.SnapAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
