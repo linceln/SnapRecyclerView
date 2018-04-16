@@ -51,7 +51,9 @@ public class AnchorLinearSnapHelper extends LinearSnapHelper {
         mRecyclerView.post(new Runnable() {
             @Override
             public void run() {
-                mRecyclerView.setPadding(anchorX, 0, mRecyclerView.getWidth() - anchorX, 0);
+                View child = mRecyclerView.getChildAt(0);
+                mRecyclerView.setPadding(anchorX - child.getWidth() / 2, 0,
+                        mRecyclerView.getWidth() - anchorX - child.getWidth() / 2, 0);
                 mRecyclerView.smoothScrollToPosition(0);
             }
         });
